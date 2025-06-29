@@ -31,7 +31,7 @@ export default function Dashboard() {
       {isMobileSidebarOpen && (
         <div className="fixed inset-0 z-40 backdrop-blur-sm bg-opacity-50" onClick={() => setIsMobileSidebarOpen(false)}>
           <div
-            className="fixed left-0 top-0 w-64 h-full bg-linear-to-r from-[#343738] to-[#596164] text-white p-5 z-50"
+            className="fixed left-0 top-0 w-64 h-full bg-[#150050] text-white p-5 z-50"
             onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside sidebar
           >
             <div className="flex justify-between items-center mb-6">

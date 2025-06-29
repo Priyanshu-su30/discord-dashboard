@@ -183,8 +183,9 @@ export default function Members() {
         )}
 
       </div>
-      <div className="backdrop-blur-md bg-white/30 rounded-lg shadow-lg w-full max-w-4xl overflow-hidden">
-        <table className="min-w-full text-white">
+      <div className="backdrop-blur-md bg-white/30 rounded-lg shadow-lg w-full max-w-4xl overflow-x-auto">
+        <div className="min-w-[300x]"> {/* or more based on your columns */}
+        <table className="w-full text-white">
           <thead className="justify-center items-center">
             <tr className="text-left text-sm font-semibold border-b border-white/20 items-center">
               <th className="py-3 px-3">Avatar</th>
@@ -244,6 +245,7 @@ export default function Members() {
 
           </tbody>
         </table>
+          </div>
             <div className="flex justify-center mt-4 gap-2">
               <button
                 disabled={currentPage === 1}
@@ -273,7 +275,7 @@ export default function Members() {
                 <ChevronRight/>
               </button>
             </div>
-      </div>
-    </div>
+          </div>
+        </div>
   )
 }
