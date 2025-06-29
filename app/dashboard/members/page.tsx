@@ -1,14 +1,21 @@
 "use client"
 import AddButton from "@/Components/AddButton";
 import DropdownMenu from "@/Components/DropdownMenu";
-import { ArrowUpDown, User } from "lucide-react";
+import { ArrowUpDown, User, X } from "lucide-react";
 import { useState } from "react";
 
 export default function Members() {
 
-
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const [search, setSearch] = useState("");
-  const users = [
+  const [newUser, setNewUser] = useState({
+    username: "",
+    role: "",
+  });
+
+  const [selectedRole, setSelectedRole] = useState("All");
+
+  const [users, setUsers] = useState([
   { id: 1, avatar: "a", username: "Tony", joinDate: "2011-10-10", role: "User" },
   { id: 2, avatar: "b", username: "Nina", joinDate: "2012-01-15", role: "Admin" },
   { id: 3, avatar: "c", username: "Liam", joinDate: "2013-04-20", role: "User" },
@@ -49,29 +56,119 @@ export default function Members() {
   // { id: 38, avatar: "ll", username: "Isaac", joinDate: "2024-10-20", role: "Admin" },
   // { id: 39, avatar: "mm", username: "Penelope", joinDate: "2024-10-28", role: "User" },
   // { id: 40, avatar: "nn", username: "Nathan", joinDate: "2024-11-03", role: "User" }
-  ];
+  ]);
 
-  const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(search.toLowerCase())
-  );
+  const [sortBy, setSortBy] = useState<"username" | "joinDate" | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
+  const handleSort = (field: "username" | "joinDate") => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const filteredUsers = [...users]
+    .filter((user) =>
+      user.username.toLowerCase().includes(search.toLowerCase()) &&
+      (selectedRole === "All" || user.role === selectedRole)
+    )
+    .sort((a, b) => {
+      if (!sortBy) return 0;
+      const valA = a[sortBy].toLowerCase?.() ?? a[sortBy];
+      const valB = b[sortBy].toLowerCase?.() ?? b[sortBy];
+      if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+      if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+  });
 
   return (
-    <div className="min-h-screen flex flex-col bg-cover bg-center items-center justify-center p-5" 
-      style={{ backgroundImage:  "url('/table-bg.jpeg')" }}>
-      <div className="flex py-3 justify-around items-center">
+    <div className="min-h-screen flex flex-col bg-transparent items-center p-5 border-solid rounded-lg border-amber-50" >
+      <div className="flex py-3 justify-between items-center">
         <div>
           <input
             type="text"
             placeholder="Search Users..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border px-3 py-1 rounded"
+            className="border px-3 py-1 rounded" 
+            suppressHydrationWarning
           />
         </div>
-        <div className="p-2 bg-linear-to-r hover:cursor-pointer" onClick={() => {}}>
-          <AddButton title={"Add User"}/>
+        <div className="p-2 hover:cursor-pointer" onClick={() => setIsFormOpen(true)}>
+          <AddButton title="Add Member" />
         </div>
+        {isFormOpen && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+            <div className="relative bg-white dark:bg-gray-900 text-black dark:text-white w-full max-w-lg mx-auto rounded-lg p-8 shadow-lg">
+              <button
+                onClick={() => setIsFormOpen(false)}
+                className="absolute top-3 right-3 text-xl text-gray-500 hover:text-gray-800 dark:hover:text-white hover:cursor-pointer"
+              >
+                <X />
+              </button>
+
+              <h2 className="text-2xl font-bold mb-6">Add New Member</h2>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const joinDate = new Date().toISOString().split("T")[0];
+                  const nextId = users.length + 1;
+
+                  setUsers([
+                    ...users,
+                    {
+                      id: nextId,
+                      avatar: "",
+                      username: newUser.username,
+                      role: newUser.role,
+                      joinDate,
+                    },
+                  ]);
+                  setNewUser({ username: "", role: "" });
+                  setIsFormOpen(false);
+                }}
+                className="space-y-5"
+              >
+                <div>
+                  <label className="block mb-1 text-md font-medium">Username</label>
+                  <input
+                    type="text"
+                    value={newUser.username}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, username: e.target.value })
+                    }
+                    required
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 text-md font-medium">Role</label>
+                  <input
+                    type="text"
+                    value={newUser.role}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, role: e.target.value })
+                    }
+                    required
+                    className="w-full px-4 py-2 rounded-lg bg-gray-700"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded hover:cursor-pointer"
+                >
+                  Add Member
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
 
       </div>
       <div className="backdrop-blur-md bg-white/30 rounded-lg shadow-lg w-full max-w-4xl overflow-hidden">
@@ -79,9 +176,43 @@ export default function Members() {
           <thead className="justify-center items-center">
             <tr className="text-left text-sm font-semibold border-b border-white/20 items-center">
               <th className="py-3 px-3">Avatar</th>
-              <th className="py-3 px-3 flex size-10">Username <ArrowUpDown/></th>
-              <th className="py-3 px-3 ">Join Date <ArrowUpDown/></th>
-              <th className="py-3 px-3"> <DropdownMenu /> </th>
+              <th>
+                <div
+                  className="py-3 px-3 flex items-center gap-1 hover:cursor-pointer"
+                  onClick={() => handleSort("username")}
+                >
+                  Username
+                  <ArrowUpDown
+                    className={`w-4 h-4 ${
+                      sortBy === "username"
+                        ? sortOrder === "asc"
+                          ? "rotate-180 text-yellow-400"
+                          : "text-yellow-400"
+                        : "text-white/40"
+                    } transition-transform`}
+                  />
+                </div>
+              </th>
+
+              <th>
+                <div
+                  className="py-3 px-3 flex items-center gap-1 hover:cursor-pointer"
+                  onClick={() => handleSort("joinDate")}
+                >
+                  Join Date
+                  <ArrowUpDown
+                    className={`w-4 h-4 ${
+                      sortBy === "joinDate"
+                        ? sortOrder === "asc"
+                          ? "rotate-180 text-yellow-400"
+                          : "text-yellow-400"
+                        : "text-white/40"
+                    } transition-transform`}
+                  />
+                </div>
+              </th>
+
+              <th className="py-3 px-3"><DropdownMenu selected={selectedRole} onSelect={setSelectedRole} /></th>
             </tr>
           </thead>
           <tbody className="text-sm">

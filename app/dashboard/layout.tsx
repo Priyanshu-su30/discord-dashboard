@@ -3,16 +3,18 @@ import Sidebar from "../../Components/Sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Top Navbar */}
-      <Navbar />
-
-      {/* Main section with sidebar + content */}
-      <div className="flex flex-1">
+    <div className="w-full min-h-screen flex bg-cover"
+      style={{ backgroundImage:  "url('/background.jpeg')" }}>
+      <div className="rounded-xl border-2 border-solid border-gray-700 focus:border-pink-600">
         <Sidebar />
+      </div>
 
-        {/* Main content area */}
-        <main className="flex-1 p-6">{children}</main>
+      <div className="w-full flex flex-col">
+        <div className="rounded-xl border-2 border-solid border-gray-700 focus:border-pink-600">
+          <Navbar />
+        </div>
+
+        <main className="p-6 rounded-xl border-2 border-solid border-gray-700 focus:border-pink-600">{children}</main>
       </div>
     </div>
   )

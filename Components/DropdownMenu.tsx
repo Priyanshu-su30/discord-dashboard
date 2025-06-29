@@ -1,21 +1,25 @@
-'use client'
+'use client';
 import React, { useState, useRef, useEffect } from "react";
 
-const roles = ["Admin", "User", "Moderator"];
+const roles = ["All", "Admin", "User", "Moderator"];
 
-export default function DropdownMenu() {
+export default function DropdownMenu({
+  selected,
+  onSelect,
+}: {
+  selected: string;
+  onSelect: (role: string) => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("Role");
   const ref = useRef(null);
 
-  const handleSelect = (role) => {
-    setSelected(role);
+  const handleSelect = (role: string) => {
+    onSelect(role); 
     setIsOpen(false);
   };
 
-  // Close dropdown when clicked outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       if (ref.current && !ref.current.contains(event.target)) {
         setIsOpen(false);
       }
@@ -42,7 +46,7 @@ export default function DropdownMenu() {
       </button>
 
       {isOpen && (
-        <ul className="absolute z-10 mt-1 w-28 bg-inherit backdrop-blur-lg border border-gray-700 rounded-md shadow-sm">
+        <ul className="absolute z-10 mt-1 w-28 bg-gray-900 backdrop-blur-lg border border-gray-700 rounded-md shadow-sm">
           {roles.map((role) => (
             <li
               key={role}
@@ -57,4 +61,3 @@ export default function DropdownMenu() {
     </div>
   );
 }
-

@@ -3,15 +3,18 @@ import React from 'react'
 import Switch from './ThemeToggle'
 
 export default function Navbar() {
+  const user = "Tony Stark"
+
   return (
     <>
-        <div className='bg-blue-900 rounded-2xl'>
-            <div className='flex w-screen h-20 items-center justify-end pr-12 gap-5'>
-                <Bell size={30} className='hover:cursor-pointer'/>
-                <CircleUser size={30} className='hover:cursor-pointer'/>
-                <Switch/>
-            </div>
+      <div className='px-10 py-3 w-full h-20 flex justify-between items-center rounded-2xl'>
+          <h1 className='text-2xl'>Welcome Back, {user}!</h1>
+        <div className='flex justify-end items-center gap-7'>
+            <Switch/>
+            <Bell size={30} className='hover:cursor-pointer'/>
+            <CircleUser size={30} className='hover:cursor-pointer'/>
         </div>
+      </div>
     </>
   )
 }
