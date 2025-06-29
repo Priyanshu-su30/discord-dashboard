@@ -34,9 +34,7 @@ export default function Dashboard() {
     },
   ];
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
 
   return (
     <>
